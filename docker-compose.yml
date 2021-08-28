@@ -1,0 +1,10 @@
+version: '3.3'
+services:
+  web:
+    build:
+      context: ./
+    volumes:
+      - .:/src
+    command: nodemon bin/www
+    ports:
+      - "3000:3000"
