@@ -9,10 +9,13 @@ app.use(express.static("static"));
 
 // Get the functions required for shops
 const shops = require('./services/shops.js');
+// Get the functions required for ratings
+const ratings = require('./services/ratings.js');
+
 // Route for the coffee shop list
 // Optional paramter for town
-app.get("/:town?", async function (req, res) {
-    var output = '';
+app.get("/shops/:town?", async function (req, res) {
+    console.log(req.params);
     if (!req.params.town) {
         filter = 'all';
 
@@ -21,22 +24,43 @@ app.get("/:town?", async function (req, res) {
         filter = req.params.town;
     }
     try {
-      console.log(shops.getShops(filter));
-     // output += (await shops.getShops(filter));
+      res.json(await shops.getShops(filter));
     } catch (err) {
         console.error(`Error while getting shops `, err.message);
         next(err);
     }
+});
+
+// A route for generating the drop down list of possible towns
+app.get("/town-options", async function (req, res) {
 
     // Now get the towns for creating an option list
     try {
-        var townslist = await shops.getTowns();
-        output += townslist['ret'];
+      res.json(await shops.getTowns());
     } catch (err) {
-        console.error(`Error while getting shops `, err.message);
+        console.error(`Error while getting towns `, err.message);
         next(err);
     }
-    res.send(output);
+});
+
+// A route to display info on a single shop
+app.get("/shop/:shop", async function (req, res) {
+    try {
+      res.json(await shops.getShop(req.params.shop));
+    } catch (err) {
+        console.error(`Error while getting shop `, err.message);
+        next(err);
+    }
+});
+
+// A route to display a users rated shops
+app.get("/ratings/:user_id", async function (req, res) {
+    try {
+      res.json(await ratings.getUserRatings(req.params.user_id));
+    } catch (err) {
+        console.error(`Error while getting user ratings `, err.message);
+        next(err);
+    }
 });
 
 // Create a route for /goodbye

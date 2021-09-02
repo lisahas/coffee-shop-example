@@ -7,32 +7,41 @@ async function getShops(filter) {
     }
     console.log(sql);
     const data = await db.query(sql);
-    console.log(data);
-    const meta = { page: 1 };
 
     return {
-        data,
-        meta
+        data
     }
 }
 
 async function getTowns() {
-    var ret = '';
     var sql = "SELECT DISTINCT shoptown FROM Shops";
     const data = await db.query(sql);
-    for(var row of data) {
-        ret += row.shoptown;
-    }
-    const meta = { page: 1 };
-    console.log(ret);
 
     return {
-        ret,
-        meta
+        data
+    }
+}
+
+async function getShop(id) {
+    //TODO get the ratings and calcuate their average (and maybe number of raters)
+    var sql = "SELECT * FROM Shops WHERE shop_id = " + id;
+    const data = await db.query(sql);
+
+    return {
+        data
+    }
+}
+
+async function getUserRatings(user_id) {
+    var sql = "SELECT * FROM Ratings r JOIN Shops s ON s.shop_id = r.shop_id  WHERE user_id = " + user_id;
+    const data = await db.query(sql);
+    return {
+        data
     }
 }
 
 module.exports = {
     getShops,
-    getTowns
+    getTowns,
+    getShop,
 }
