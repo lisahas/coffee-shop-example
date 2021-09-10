@@ -1,16 +1,19 @@
 const db = require('../services/db');
+const Shop = require('../classes/Shop');
 
 async function getShops(filter) {
     var sql = 'SELECT * FROM Shops';
     if (filter != 'all') {
         sql += ` WHERE shoptown = "${filter}"`;
     }
-    console.log(sql);
-    const data = await db.query(sql);
-
-    return {
-        data
+    var data = await db.query(sql);
+    shops = [];
+    for (var row of data ) {
+        var shop  = new Shop.Shop(row.shop_id, row.shopname, row.shopaddress, row.shoptown);
+        shop.getShopRatings();
+        shops.push(shop);
     }
+    return shops;
 }
 
 async function getTowns() {

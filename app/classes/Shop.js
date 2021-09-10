@@ -21,7 +21,11 @@ class Shop {
 
     getShopRatings() {
         // Placeholder for now
-        return 5;
+        this.rating = 5;
     }
 
 }
+
+module.exports = {
+    Shop
+  }
