@@ -8,9 +8,9 @@ var app = express();
 app.use(express.static("static"));
 
 // Get the functions required for shops
-const shops = require('./services/shops.js');
+const shops = require('./controllers/shops.js');
 // Get the functions required for ratings
-const ratings = require('./services/ratings.js');
+const ratings = require('./controllers/ratings.js');
 
 // Route for the coffee shop list
 // Optional paramter for town
@@ -27,7 +27,6 @@ app.get("/shops/:town?", async function (req, res) {
       res.json(await shops.getShops(filter));
     } catch (err) {
         console.error(`Error while getting shops `, err.message);
-        next(err);
     }
 });
 
@@ -59,7 +58,6 @@ app.get("/ratings/:user_id", async function (req, res) {
       res.json(await ratings.getUserRatings(req.params.user_id));
     } catch (err) {
         console.error(`Error while getting user ratings `, err.message);
-        next(err);
     }
 });
 
