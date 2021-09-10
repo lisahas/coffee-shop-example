@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Shoplisting</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular.js"></script>
+    <script src="Shop.js"></script>
+    <script src="shoplisting.js"></script>
+  </head>
+  <body>
+    <h1>Shops</h1>
+    <div ng-app="mainApp" ng-controller="shopController">
+      <table border=1>
+        <tr>
+          <th>id</th>
+          <th>Shop name</th>
+          <th>Shop address</th>
+          <th>Shop town</th>
+          <th>Shop ratings</th>
+        </tr>
+        <tr ng-repeat = "shop in shops">
+          <td> </td>
+          <td>{{ shop.name }}</td>
+          <td>{{ shop.address }}</td>
+          <td>{{ shop.town }}</td>
+          <td>{{ shop.getShopRatings() }}</td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>
