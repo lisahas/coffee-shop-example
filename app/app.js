@@ -14,6 +14,7 @@ const ratings = require('./controllers/ratings.js');
 
 // Route for the coffee shop list
 // Optional paramter for town
+// As a coffee drinker I want to be able to list reviewed coffee shops in my town so that I can drink good coffee
 app.get("/shops/:town?", async function (req, res) {
     console.log(req.params);
     if (!req.params.town) {
@@ -38,7 +39,6 @@ app.get("/town-options", async function (req, res) {
       res.json(await shops.getTowns());
     } catch (err) {
         console.error(`Error while getting towns `, err.message);
-        next(err);
     }
 });
 
@@ -53,6 +53,7 @@ app.get("/shop/:shop", async function (req, res) {
 });
 
 // A route to display a users rated shops
+// As a coffee drinker I want to list the coffee shops that I have rated in the past so I can visit the coffee shops again
 app.get("/ratings/:user_id", async function (req, res) {
     try {
       res.json(await ratings.getUserRatings(req.params.user_id));

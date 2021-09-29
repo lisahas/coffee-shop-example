@@ -6,23 +6,26 @@ async function getShops(filter) {
     if (filter != 'all') {
         sql += ` WHERE shoptown = "${filter}"`;
     }
-    var data = await db.query(sql);
-    shops = [];
+    let data = await db.query(sql);
+    var shops = [];
     for (var row of data ) {
         var shop  = new Shop.Shop(row.shop_id, row.shopname, row.shopaddress, row.shoptown);
         shop.getShopRatings();
         shops.push(shop);
     }
+    // Return an array of Shop instances
     return shops;
 }
 
 async function getTowns() {
     var sql = "SELECT DISTINCT shoptown FROM Shops";
-    const data = await db.query(sql);
-
-    return {
-        data
+    let data = await db.query(sql);
+    towns = [];
+    for (var row of data ) {
+        towns.push(row.shoptown);
     }
+    // Return an array of town names
+    return towns;
 }
 
 async function getShop(id) {
