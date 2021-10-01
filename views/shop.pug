@@ -1,0 +1,21 @@
+html
+  head
+    title #{shop.name}
+    style(type="text/css").
+      table, th, td {
+          border: 1px solid black;      
+       }
+      
+  body
+    h1#myHeading #{shop.name}
+    p.firstParagraph I love this template!!!
+    table.table-style
+        td=shop.id 
+        td=shop.address
+        td=shop.town
+        td #{shop.rating} out of #{shop.raters} raters
+
+
+    br
+    a(href="/listing")
+        button(type="button") Back to list

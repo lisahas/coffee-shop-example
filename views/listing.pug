@@ -1,0 +1,31 @@
+html
+  head
+    title Coffee shops
+    style(type="text/css").
+      table, th, td {
+          border: 1px solid black;      
+       }
+      
+  body
+    h1#myHeading This is a pug template
+    p.firstParagraph I love this template!!!
+    form(action='listing', method='GET')
+        select(name='town')
+            each town in towns 
+                if town == selected
+                    option(value=town selected='selected') #{town}
+                else 
+                    option(value=town) #{town}
+        input(type='submit', value='GO!')
+    table.table-style
+        each shop in shops 
+            tr 
+                td=shop.id 
+                td
+                    a(href='single-shop/' + shop.id) #{shop.name}
+                td=shop.address
+                td=shop.town
+                td #{shop.rating} out of #{shop.raters} raters
+    br
+    a(href="listing")
+        button(type="button") Reset filters

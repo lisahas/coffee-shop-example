@@ -7,19 +7,46 @@ var app = express();
 // Add static files location
 app.use(express.static("static"));
 
+// Use pug
+app.set('view engine', 'pug');
+// Set the path to the pug templates
+app.set('views', '/src/views');
+
+
 // Get the functions required for shops
 const shops = require('./controllers/shops.js');
 // Get the functions required for ratings
 const ratings = require('./controllers/ratings.js');
 
-// Route for the coffee shop list
+// Test the pug template
+app.get('/', async function (req, res) {
+    res.render('index')
+});
+
+// Coffee shop listing page, rendered via template
+// As a coffee drinker I want to be able to list reviewed coffee shops in my town so that I can drink good coffee
+app.get('/listing', async function (req, res) {
+    // find out if there is a parameter passed
+    console.log(req.query.town);
+    var filter = 'all';
+    if(req.query.town) {
+        filter = req.query.town;
+    }
+    try {
+        var shopslist = await shops.getShops(filter);
+        var townslist = await shops.getTowns();
+        res.render('listing', {'shops' : shopslist, 'towns' : townslist, 'selected' : filter });
+      } catch (err) {
+          console.error(`Error while getting shops `, err.message);
+      }
+});
+
+// Route for the coffee shop list JSON
 // Optional paramter for town
 // As a coffee drinker I want to be able to list reviewed coffee shops in my town so that I can drink good coffee
 app.get("/shops/:town?", async function (req, res) {
-    console.log(req.params);
     if (!req.params.town) {
         filter = 'all';
-
     }
     else {
         filter = req.params.town;
@@ -42,13 +69,24 @@ app.get("/town-options", async function (req, res) {
     }
 });
 
-// A route to display info on a single shop
+// A route to display info on a single shop JSON
 app.get("/shop/:shop", async function (req, res) {
     try {
       res.json(await shops.getShop(req.params.shop));
     } catch (err) {
         console.error(`Error while getting shop `, err.message);
         next(err);
+    }
+});
+
+// A route to display info on a single shop with PUG
+app.get("/single-shop/:id", async function (req, res) {
+    try {
+       shopData = await shops.getShop(req.params.id);
+       console.log(shopData);
+       res.render('shop', {'shop' : shopData});
+    } catch (err) {
+        console.error(`Error while getting shop `, err.message);
     }
 });
 

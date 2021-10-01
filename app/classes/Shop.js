@@ -8,8 +8,10 @@ class Shop {
     address;
     // Shop town
     town;
-    // Shop rating
+    // Shop rating average
     rating;
+    // Shop rating number of raters
+    raters;
 
 
     constructor(id, name, address, town) {
@@ -19,9 +21,24 @@ class Shop {
         this.town = town;
     }
 
-    getShopRatings() {
-        // Placeholder for now
-        this.rating = 5;
+    async getShopRatings() {
+        const db = require('../services/db');
+        // Get the total ratings
+        var sql = "SELECT sum(Rating) as total FROM Ratings WHERE shop_id = " + this.id;
+        var data = await db.query(sql);
+        var total = data[0].total;
+        // Get the number of users who rated
+        var sql = "SELECT count(Rating) as count FROM Ratings WHERE shop_id = " + this.id;
+        var data = await db.query(sql);
+        var raters = data[0].count;
+        this.raters = raters;
+        // Calculate an average
+        if(raters != 0) {
+            this.rating = total / raters;
+        }
+        else {
+            this.rating = 0;
+        }
     }
 
 }
