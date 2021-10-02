@@ -4,6 +4,12 @@ const express = require("express");
 // Create express app
 var app = express();
 
+// Body parser modules for POST requests
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+
 // Add static files location
 app.use(express.static("static"));
 
@@ -23,7 +29,8 @@ app.get('/', async function (req, res) {
     res.render('index')
 });
 
-// Coffee shop listing page, rendered via template
+
+// Coffee shop listing page, rendered via PUG
 // As a coffee drinker I want to be able to list reviewed coffee shops in my town so that I can drink good coffee
 app.get('/listing', async function (req, res) {
     // find out if there is a parameter passed
@@ -90,7 +97,7 @@ app.get("/single-shop/:id", async function (req, res) {
     }
 });
 
-// A route to display a users rated shops
+// A route to display a users rated shops JSON
 // As a coffee drinker I want to list the coffee shops that I have rated in the past so I can visit the coffee shops again
 app.get("/ratings/:user_id", async function (req, res) {
     try {
@@ -100,23 +107,17 @@ app.get("/ratings/:user_id", async function (req, res) {
     }
 });
 
-// Create a route for /goodbye
-// Responds to a 'GET' request
-app.get("/goodbye", function (req, res) {
-    res.send("Goodbye world!");
+// As a coffee drinker, I want to add a coffee shop
+app.post('/add-shop', async function (req, res) {
+    try {
+        var result = await shops.addShop(req.body);
+        var newId = result.insertId;
+        var ratingResult = await shops.addRating(newId, req.body.userId, req.body.shopRating);
+     } catch (err) {
+         console.error(`Error while adding shop or rating `, err.message);
+     }
+     res.redirect('/listing');
 });
-
-// Create a dynamic route for /hello/<name>, where name is any value provided by user
-// At the end of the URL
-// Responds to a 'GET' request
-app.get("/hello/:name", function (req, res) {
-    // req.params contains any parameters in the request
-    // We can examine it in the console for debugging purposes
-    console.log(req.params);
-    //  Retrieve the 'name' parameter and use it in a dynamically generated page
-    res.send("Hello " + req.params.name);
-});
-
 
 // Start server on port 3000
 app.listen(3000, function () {

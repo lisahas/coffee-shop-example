@@ -24,11 +24,11 @@ class Shop {
     async getShopRatings() {
         const db = require('../services/db');
         // Get the total ratings
-        var sql = "SELECT sum(Rating) as total FROM Ratings WHERE shop_id = " + this.id;
+        var sql = "SELECT sum(rating) as total FROM ratings WHERE shop_id = " + this.id;
         var data = await db.query(sql);
         var total = data[0].total;
         // Get the number of users who rated
-        var sql = "SELECT count(Rating) as count FROM Ratings WHERE shop_id = " + this.id;
+        var sql = "SELECT count(rating) as count FROM ratings WHERE shop_id = " + this.id;
         var data = await db.query(sql);
         var raters = data[0].count;
         this.raters = raters;
