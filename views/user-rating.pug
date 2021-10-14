@@ -1,0 +1,30 @@
+html
+  head
+    title Coffee shops rated by user 
+    style(type="text/css").
+      table, th, td {
+          border: 1px solid black;      
+       }
+       label {
+          display:block;
+          font-size:0.5em;      
+       }
+      
+  body
+    h1#myHeading Coffee shops rated by... #{user.name}
+    table.table-style
+        th id 
+        th Shop name 
+        th Shop address 
+        th Shop town
+        th My rating 
+        each shop in shops 
+            tr 
+                td=shop.id 
+                td
+                    a(href='single-shop/' + shop.id) #{shop.name}
+                td=shop.address
+                td=shop.town
+                td #{shop.user_rating}
+    br
+    

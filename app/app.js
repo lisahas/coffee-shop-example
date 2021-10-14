@@ -23,6 +23,8 @@ app.set('views', '/src/views');
 const shops = require('./controllers/shops.js');
 // Get the functions required for ratings
 const ratings = require('./controllers/ratings.js');
+// Get the functions required for users
+const users = require('./controllers/users.js');
 
 // Test the pug template
 app.get('/', async function (req, res) {
@@ -42,7 +44,8 @@ app.get('/listing', async function (req, res) {
     try {
         var shopslist = await shops.getShops(filter);
         var townslist = await shops.getTowns();
-        res.render('listing', {'shops' : shopslist, 'towns' : townslist, 'selected' : filter });
+        var usersinfo = await users.getUsers();
+        res.render('listing', {'shops' : shopslist, 'towns' : townslist, 'selected' : filter, 'users': usersinfo});
       } catch (err) {
           console.error(`Error while getting shops `, err.message);
       }
@@ -107,16 +110,47 @@ app.get("/ratings/:user_id", async function (req, res) {
     }
 });
 
+// Post route to recieve new data
 // As a coffee drinker, I want to add a coffee shop
 app.post('/add-shop', async function (req, res) {
     try {
         var result = await shops.addShop(req.body);
         var newId = result.insertId;
-        var ratingResult = await shops.addRating(newId, req.body.userId, req.body.shopRating);
+        var ratingResult = await shops.addRating(newId, req.body.user_id, req.body.shopRating);
      } catch (err) {
          console.error(`Error while adding shop or rating `, err.message);
      }
      res.redirect('/listing');
+});
+
+// List users JSON
+app.get("/user-list", async function (req, res) {
+    try {
+      res.json(await users.getUsers());
+    } catch (err) {
+        console.error(`Error while getting users `, err.message);
+    }
+});
+
+// List users PUG
+app.get("/user-list-table", async function (req, res) {
+    try {
+        res.render('users', {'users' : await users.getUsers()});
+    } catch (err) {
+        console.error(`Error while getting users `, err.message);
+    }
+});
+
+// List shops rated by a user PUG
+// As a coffee drinker I want to list the coffee shops that I have rated in the past so I can visit the coffee shops again
+app.get("/user-ratings/:user_id", async function (req, res) {
+    try {
+      var user = await users.getUser(req.params.user_id);
+      var shops = await ratings.getUserRatings(req.params.user_id);
+      res.render('user-rating', {'shops': shops, 'user': user[0]});
+    } catch (err) {
+        console.error(`Error while getting user ratings `, err.message);
+    }
 });
 
 // Start server on port 3000
